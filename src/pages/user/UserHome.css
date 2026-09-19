@@ -1,0 +1,112 @@
+.user-home__header {
+  margin-bottom: var(--space-6);
+}
+
+.user-home__greeting {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-tight);
+  margin-bottom: var(--space-1);
+}
+
+.user-home__subtext {
+  font-size: var(--font-size-base);
+}
+
+/* ── AI Entry ── */
+.ai-entry {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-4) var(--space-5);
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-6);
+  text-align: left;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ai-entry:hover {
+  border-color: var(--color-border-strong);
+  background-color: var(--color-surface-hover);
+}
+
+.ai-entry:active {
+  transform: scale(0.98);
+}
+
+.ai-entry__content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ai-entry__title {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+}
+
+.ai-entry__desc {
+  font-size: var(--font-size-sm);
+}
+
+/* ── Services Grid ── */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-3);
+}
+
+@media (max-width: 360px) {
+  .services-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.service-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-2);
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  color: var(--color-text-primary);
+  -webkit-tap-highlight-color: transparent;
+  min-height: var(--touch-min);
+}
+
+.service-tile:hover {
+  border-color: var(--color-border-strong);
+  background-color: var(--color-surface-hover);
+}
+
+.service-tile:active {
+  transform: scale(0.95);
+  background-color: var(--color-surface-active);
+}
+
+.service-tile__icon {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  background-color: var(--color-bg-tertiary);
+}
+
+.service-tile__label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  text-align: center;
+  line-height: var(--line-height-tight);
+}

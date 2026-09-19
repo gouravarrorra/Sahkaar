@@ -1,0 +1,293 @@
+/* ============================================
+   SAHKAAR — AI Chat Request Styles
+   ============================================ */
+
+/* ── Chat Page Layout ── */
+.chat-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  width: 100%;
+}
+
+
+/* ── Chat Header ── */
+.chat-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  padding-top: calc(var(--safe-area-top) + var(--space-4));
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.chat-header__title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+}
+
+.chat-header__subtitle {
+  font-size: var(--font-size-xs);
+}
+
+
+/* ── Messages Area ── */
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  -webkit-overflow-scrolling: touch;
+}
+
+
+/* ── Empty State ── */
+.chat-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: var(--space-10) var(--space-4);
+  gap: var(--space-5);
+}
+
+.chat-suggestions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+.chat-suggestion {
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  text-align: left;
+  transition: all var(--transition-base);
+}
+
+.chat-suggestion:hover {
+  background-color: var(--color-surface-hover);
+  border-color: var(--color-border-strong);
+}
+
+.chat-suggestion:active {
+  transform: scale(0.98);
+}
+
+
+/* ── Chat Bubbles ── */
+.chat-bubble {
+  max-width: 85%;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  animation: fadeInUp 0.3s ease;
+}
+
+.chat-bubble--user {
+  align-self: flex-end;
+  background-color: var(--color-primary);
+  color: var(--color-primary-text);
+  border-bottom-right-radius: var(--radius-sm);
+}
+
+.chat-bubble--ai {
+  align-self: flex-start;
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-subtle);
+  border-bottom-left-radius: var(--radius-sm);
+}
+
+.chat-bubble__label {
+  display: block;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-tertiary);
+  margin-bottom: var(--space-1);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wide);
+}
+
+.chat-bubble__text {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
+}
+
+
+/* ── Input Bar ── */
+.chat-input-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  padding-bottom: calc(var(--safe-area-bottom) + var(--space-3));
+  border-top: 1px solid var(--color-border-subtle);
+  background-color: var(--color-bg);
+}
+
+.chat-input {
+  flex: 1;
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--color-input-bg);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-base);
+  outline: none;
+  min-height: var(--touch-min);
+  transition: border-color var(--transition-base);
+}
+
+.chat-input:focus {
+  border-color: var(--color-input-focus);
+}
+
+.chat-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.chat-send {
+  width: var(--touch-min);
+  height: var(--touch-min);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  color: var(--color-primary-text);
+  transition: all var(--transition-base);
+  flex-shrink: 0;
+}
+
+.chat-send:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.chat-send:not(:disabled):hover {
+  background-color: var(--color-primary-hover);
+}
+
+.chat-send:not(:disabled):active {
+  transform: scale(0.92);
+}
+
+
+/* ── Inline Action Buttons (Photo, Location) ── */
+.chat-inline-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-2) 0;
+  max-width: 85%;
+}
+
+.chat-inline-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--color-primary);
+  color: var(--color-primary-text);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  transition: all var(--transition-base);
+  min-height: var(--touch-min);
+  justify-content: center;
+}
+
+.chat-inline-btn:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.chat-inline-btn:active {
+  transform: scale(0.97);
+}
+
+.chat-inline-btn--secondary {
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+}
+
+.chat-inline-btn--secondary:hover {
+  background-color: var(--color-surface-hover);
+}
+
+
+/* ── Location Buttons ── */
+.chat-location-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  text-align: left;
+  min-height: var(--touch-min);
+  width: 100%;
+  transition: all var(--transition-base);
+}
+
+.chat-location-btn span {
+  flex: 1;
+}
+
+.chat-location-btn:hover {
+  background-color: var(--color-surface-hover);
+  border-color: var(--color-border-strong);
+}
+
+.chat-location-btn:active {
+  transform: scale(0.98);
+}
+
+
+/* ── Inline Forms (Date/Time, Manual Location) ── */
+.chat-inline-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  max-width: 90%;
+}
+
+.chat-datetime-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+
+
+/* ── Review Card in Chat ── */
+.chat-review-card {
+  max-width: 90%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.chat-review-card .review-card {
+  margin-bottom: 0;
+}
+
+
+/* ── Chat Action (CTA) ── */
+.chat-action {
+  padding: var(--space-2) 0;
+  max-width: 85%;
+}

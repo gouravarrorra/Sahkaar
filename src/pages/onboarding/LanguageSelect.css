@@ -1,0 +1,106 @@
+.language-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-6);
+  max-width: var(--max-width);
+  margin: 0 auto;
+  width: 100%;
+}
+
+.language-page__top {
+  padding-top: 20vh;
+  text-align: center;
+  margin-bottom: var(--space-10);
+}
+
+.language-page__brand {
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-extrabold);
+  letter-spacing: var(--letter-spacing-tight);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-6);
+}
+
+.language-page__prompt {
+  font-size: var(--font-size-lg);
+  color: var(--color-text-secondary);
+  min-height: 1.5em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.language-page__typed {
+  font-weight: var(--font-weight-regular);
+}
+
+.language-page__list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.language-page__list--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.language-option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  width: 100%;
+  text-align: left;
+  color: var(--color-text-primary);
+  min-height: var(--touch-min);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.language-option:hover {
+  border-color: var(--color-border-strong);
+  background-color: var(--color-surface-hover);
+}
+
+.language-option--selected {
+  border-color: var(--color-text-primary);
+  background-color: var(--color-surface-hover);
+}
+
+.language-option__name {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  flex: 1;
+}
+
+.language-option__english {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-tertiary);
+}
+
+.language-option__check {
+  color: var(--color-text-primary);
+  display: flex;
+}
+
+.language-page__footer {
+  padding: var(--space-6) 0 var(--space-4);
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.5s ease 0.2s, transform 0.5s ease 0.2s;
+}
+
+.language-page__footer--visible {
+  opacity: 1;
+  transform: translateY(0);
+}

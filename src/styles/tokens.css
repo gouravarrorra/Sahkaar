@@ -1,0 +1,241 @@
+/* ============================================
+   SAHKAAR — Design Tokens
+   Black/White visual system with strict neutrals
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  /* ── Typography ── */
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-size-xs: 0.6875rem;    /* 11px */
+  --font-size-sm: 0.75rem;      /* 12px */
+  --font-size-base: 0.875rem;   /* 14px */
+  --font-size-md: 1rem;         /* 16px */
+  --font-size-lg: 1.125rem;     /* 18px */
+  --font-size-xl: 1.25rem;      /* 20px */
+  --font-size-2xl: 1.5rem;      /* 24px */
+  --font-size-3xl: 1.875rem;    /* 30px */
+  --font-size-4xl: 2.25rem;     /* 36px */
+
+  --font-weight-light: 300;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.7;
+
+  --letter-spacing-tight: -0.02em;
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide: 0.02em;
+  --letter-spacing-widest: 0.08em;
+
+  /* ── Spacing (4px base) ── */
+  --space-0: 0;
+  --space-1: 0.25rem;   /* 4px */
+  --space-2: 0.5rem;    /* 8px */
+  --space-3: 0.75rem;   /* 12px */
+  --space-4: 1rem;      /* 16px */
+  --space-5: 1.25rem;   /* 20px */
+  --space-6: 1.5rem;    /* 24px */
+  --space-8: 2rem;      /* 32px */
+  --space-10: 2.5rem;   /* 40px */
+  --space-12: 3rem;     /* 48px */
+  --space-16: 4rem;     /* 64px */
+  --space-20: 5rem;     /* 80px */
+
+  /* ── Border Radius ── */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+
+  /* ── Shadows ── */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.08);
+
+  /* ── Transitions ── */
+  --transition-fast: 120ms ease;
+  --transition-base: 200ms ease;
+  --transition-slow: 350ms ease;
+  --transition-spring: 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ── Z-Index ── */
+  --z-base: 0;
+  --z-dropdown: 10;
+  --z-sticky: 20;
+  --z-overlay: 30;
+  --z-modal: 40;
+  --z-toast: 50;
+
+  /* ── Layout ── */
+  --max-width: 480px;
+  --bottom-nav-height: 64px;
+  --header-height: 56px;
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+
+  /* ── Touch Targets ── */
+  --touch-min: 44px;
+}
+
+
+/* ============================================
+   LIGHT MODE (default)
+   ============================================ */
+:root,
+[data-theme="light"] {
+  --color-bg: #FFFFFF;
+  --color-bg-secondary: #F7F7F8;
+  --color-bg-tertiary: #F0F0F2;
+
+  --color-surface: #FFFFFF;
+  --color-surface-hover: #F7F7F8;
+  --color-surface-active: #F0F0F2;
+  --color-surface-raised: #FFFFFF;
+
+  --color-text-primary: #0A0A0B;
+  --color-text-secondary: #6B6B76;
+  --color-text-tertiary: #9B9BA6;
+  --color-text-inverse: #FFFFFF;
+  --color-text-disabled: #C4C4CC;
+
+  --color-border: #E5E5EA;
+  --color-border-strong: #D1D1D8;
+  --color-border-subtle: #F0F0F2;
+
+  --color-input-bg: #F7F7F8;
+  --color-input-border: #E5E5EA;
+  --color-input-focus: #0A0A0B;
+
+  --color-primary: #0A0A0B;
+  --color-primary-hover: #1A1A1C;
+  --color-primary-text: #FFFFFF;
+
+  --color-success: #1A8D3E;
+  --color-success-bg: #E8F5EC;
+  --color-warning: #B45309;
+  --color-warning-bg: #FEF3C7;
+  --color-error: #D1242F;
+  --color-error-bg: #FFEBEE;
+  --color-info: #0969DA;
+  --color-info-bg: #DDF4FF;
+
+  --color-rating: #F59E0B;
+
+  --color-overlay: rgba(0, 0, 0, 0.4);
+  --color-skeleton: #F0F0F2;
+  --color-skeleton-shine: #F7F7F8;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+
+/* ============================================
+   DARK MODE
+   ============================================ */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-bg: #000000;
+    --color-bg-secondary: #0A0A0B;
+    --color-bg-tertiary: #141416;
+
+    --color-surface: #0A0A0B;
+    --color-surface-hover: #141416;
+    --color-surface-active: #1C1C1F;
+    --color-surface-raised: #141416;
+
+    --color-text-primary: #F5F5F7;
+    --color-text-secondary: #8E8E96;
+    --color-text-tertiary: #5C5C66;
+    --color-text-inverse: #000000;
+    --color-text-disabled: #3A3A42;
+
+    --color-border: #1C1C1F;
+    --color-border-strong: #2C2C32;
+    --color-border-subtle: #141416;
+
+    --color-input-bg: #0A0A0B;
+    --color-input-border: #1C1C1F;
+    --color-input-focus: #F5F5F7;
+
+    --color-primary: #F5F5F7;
+    --color-primary-hover: #E0E0E4;
+    --color-primary-text: #000000;
+
+    --color-success: #2EA043;
+    --color-success-bg: rgba(46, 160, 67, 0.12);
+    --color-warning: #D97706;
+    --color-warning-bg: rgba(217, 119, 6, 0.12);
+    --color-error: #F85149;
+    --color-error-bg: rgba(248, 81, 73, 0.12);
+    --color-info: #58A6FF;
+    --color-info-bg: rgba(88, 166, 255, 0.12);
+
+    --color-rating: #F59E0B;
+
+    --color-overlay: rgba(0, 0, 0, 0.6);
+    --color-skeleton: #141416;
+    --color-skeleton-shine: #1C1C1F;
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.4);
+  }
+}
+
+[data-theme="dark"] {
+  --color-bg: #000000;
+  --color-bg-secondary: #0A0A0B;
+  --color-bg-tertiary: #141416;
+
+  --color-surface: #0A0A0B;
+  --color-surface-hover: #141416;
+  --color-surface-active: #1C1C1F;
+  --color-surface-raised: #141416;
+
+  --color-text-primary: #F5F5F7;
+  --color-text-secondary: #8E8E96;
+  --color-text-tertiary: #5C5C66;
+  --color-text-inverse: #000000;
+  --color-text-disabled: #3A3A42;
+
+  --color-border: #1C1C1F;
+  --color-border-strong: #2C2C32;
+  --color-border-subtle: #141416;
+
+  --color-input-bg: #0A0A0B;
+  --color-input-border: #1C1C1F;
+  --color-input-focus: #F5F5F7;
+
+  --color-primary: #F5F5F7;
+  --color-primary-hover: #E0E0E4;
+  --color-primary-text: #000000;
+
+  --color-success: #2EA043;
+  --color-success-bg: rgba(46, 160, 67, 0.12);
+  --color-warning: #D97706;
+  --color-warning-bg: rgba(217, 119, 6, 0.12);
+  --color-error: #F85149;
+  --color-error-bg: rgba(248, 81, 73, 0.12);
+  --color-info: #58A6FF;
+  --color-info-bg: rgba(88, 166, 255, 0.12);
+
+  --color-rating: #F59E0B;
+
+  --color-overlay: rgba(0, 0, 0, 0.6);
+  --color-skeleton: #141416;
+  --color-skeleton-shine: #1C1C1F;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.4);
+}

@@ -1,0 +1,40 @@
+.rating-display {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.rating-value {
+  margin-left: var(--space-1);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.rating-star {
+  transition: all var(--transition-fast);
+}
+
+.rating-input {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.rating-input__btn {
+  background: none;
+  border: none;
+  padding: var(--space-1);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: transform var(--transition-fast);
+  display: flex;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.rating-input__btn:hover {
+  transform: scale(1.15);
+}
+
+.rating-input__btn:active {
+  transform: scale(0.95);
+}

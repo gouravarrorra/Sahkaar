@@ -1,0 +1,26 @@
+.card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+  width: 100%;
+  text-align: left;
+}
+
+.card--padded {
+  padding: var(--space-4);
+}
+
+.card--hoverable {
+  cursor: pointer;
+}
+
+.card--hoverable:hover {
+  background-color: var(--color-surface-hover);
+  border-color: var(--color-border-strong);
+}
+
+.card--hoverable:active {
+  background-color: var(--color-surface-active);
+  transform: scale(0.99);
+}

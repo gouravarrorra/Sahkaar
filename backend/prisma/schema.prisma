@@ -1,0 +1,890 @@
+// This is your Prisma schema file for SAHKAAR backend
+// Uses Neon PostgreSQL (cloud) for production
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ═══════════════════════════════════════════════
+// COMMUNITY
+// ═══════════════════════════════════════════════
+
+model Community {
+  id          String   @id
+  name        String
+  description String   @default("")
+  location    String   @default("")
+  status      String   @default("active") // active, suspended
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  admins                Admin[]
+  workers               Worker[]
+  users                 User[]
+  bookings              Booking[]
+  services              Service[]
+  priceBands            PriceBand[]
+  priceProposals        PriceProposal[]
+  priceExceptions       PriceException[]
+  pricingCommittees     PricingCommittee[]
+  governmentSchemes     GovernmentScheme[]
+  trainingPrograms      TrainingProgram[]
+  governmentRequirements GovernmentRequirement[]
+  supportTickets        SupportTicket[]
+  auditLogs             AuditLog[]
+  adminActionLogs       AdminActionLog[]
+  notifications         Notification[]
+  welfareRules          WelfareRule[]
+  welfareContributions  WelfareContribution[]
+  insurancePlans        InsurancePlan[]
+  payments              Payment[]
+  invoices              Invoice[]
+  travelConfigs         TravelConfig[]
+  algorithmVersions     PricingAlgorithmVersion[]
+  cartelAlerts          CartelAlert[]
+  consumerFeedback      ConsumerPriceFeedback[]
+}
+
+// ═══════════════════════════════════════════════
+// ADMIN
+// ═══════════════════════════════════════════════
+
+model Admin {
+  id           String   @id
+  communityId  String
+  community    Community @relation(fields: [communityId], references: [id])
+  name         String
+  email        String   @unique
+  passwordHash String
+  mobile       String   @default("")
+  role         String   @default("admin") // admin, reviewer, auditor
+  status       String   @default("active") // active, suspended
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  auditLogs       AuditLog[]
+  adminActionLogs AdminActionLog[]
+}
+
+// ═══════════════════════════════════════════════
+// USER
+// ═══════════════════════════════════════════════
+
+model User {
+  id           String   @id
+  communityId  String?
+  community    Community? @relation(fields: [communityId], references: [id])
+  name         String
+  email        String?  @unique
+  mobile       String   @unique
+  passwordHash String   @default("")
+  language     String   @default("en")
+  avatar       String?
+  status       String   @default("active") // active, suspended
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  bookings          Booking[]
+  consumerFeedback  ConsumerPriceFeedback[]
+  supportTickets    SupportTicket[]
+  notifications     Notification[]
+}
+
+// ═══════════════════════════════════════════════
+// WORKER
+// ═══════════════════════════════════════════════
+
+model Worker {
+  id                 String   @id
+  communityId        String
+  community          Community @relation(fields: [communityId], references: [id])
+  name               String
+  mobile             String   @unique
+  email              String   @default("")
+  passwordHash       String   @default("")
+  avatar             String?
+  baseLocation       String   @default("")
+  baseLocationLat    Float?
+  baseLocationLng    Float?
+  serviceRadius      Int      @default(10) // km
+  verificationStatus String   @default("registered") // registered, pending_verification, admin_review, approved, rejected
+  accountStatus      String   @default("active") // active, suspended, deactivated
+  rating             Float    @default(0)
+  reviewCount        Int      @default(0)
+  totalEarnings      Float    @default(0)
+  monthEarnings      Float    @default(0)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  skills              WorkerSkill[]
+  availability        WorkerAvailability[]
+  certifications      Certification[]
+  bookings            Booking[]            @relation("WorkerBookings")
+  bookingResponses    BookingWorkerResponse[]
+  priceProposals      PriceProposal[]
+  insuranceEnrollments WorkerInsurance[]
+  welfareContributions WelfareContribution[]
+  schemeApplications  SchemeApplication[]
+  trainingEnrollments TrainingEnrollment[]
+  supportTickets      SupportTicket[]      @relation("WorkerTickets")
+  notifications       Notification[]       @relation("WorkerNotifications")
+  committeeMemberships PricingCommitteeMember[]
+}
+
+// ═══════════════════════════════════════════════
+// WORKER SKILLS
+// ═══════════════════════════════════════════════
+
+model WorkerSkill {
+  id        String   @id @default(cuid())
+  workerId  String
+  worker    Worker   @relation(fields: [workerId], references: [id])
+  serviceId String
+  service   Service  @relation(fields: [serviceId], references: [id])
+  level     String   @default("basic") // basic, intermediate, advanced, expert
+  addedAt   DateTime @default(now())
+
+  @@unique([workerId, serviceId])
+}
+
+// ═══════════════════════════════════════════════
+// WORKER AVAILABILITY
+// ═══════════════════════════════════════════════
+
+model WorkerAvailability {
+  id        String  @id @default(cuid())
+  workerId  String
+  worker    Worker  @relation(fields: [workerId], references: [id])
+  dayOfWeek String  // monday, tuesday, ...
+  startTime String  // "09:00"
+  endTime   String  // "18:00"
+  isOff     Boolean @default(false)
+
+  @@unique([workerId, dayOfWeek])
+}
+
+// ═══════════════════════════════════════════════
+// SERVICE (database-driven, not hardcoded)
+// ═══════════════════════════════════════════════
+
+model Service {
+  id          String   @id
+  communityId String?
+  community   Community? @relation(fields: [communityId], references: [id])
+  name        String
+  label       String
+  icon        String   @default("")
+  description String   @default("")
+  status      String   @default("active") // active, inactive
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  subTypes         ServiceSubType[]
+  workerSkills     WorkerSkill[]
+  priceBands       PriceBand[]
+  priceProposals   PriceProposal[]
+  priceExceptions  PriceException[]
+  bookings         Booking[]
+  consumerFeedback ConsumerPriceFeedback[]
+  certifications   Certification[]
+  cartelAlerts     CartelAlert[]
+}
+
+model ServiceSubType {
+  id        String  @id @default(cuid())
+  serviceId String
+  service   Service @relation(fields: [serviceId], references: [id])
+  name      String
+  status    String  @default("active")
+
+  @@unique([serviceId, name])
+}
+
+// ═══════════════════════════════════════════════
+// CERTIFICATION
+// ═══════════════════════════════════════════════
+
+model Certification {
+  id              String   @id @default(cuid())
+  workerId        String
+  worker          Worker   @relation(fields: [workerId], references: [id])
+  serviceId       String
+  service         Service  @relation(fields: [serviceId], references: [id])
+  type            String   @default("platform") // platform, skill, external
+  status          String   @default("requested") // requested, scheduled, assessed, passed, failed, issued, expired
+  assessedBy      String?
+  assessmentDate  DateTime?
+  assessmentNotes String   @default("")
+  certificateNo   String?
+  issuedAt        DateTime?
+  expiresAt       DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([workerId, serviceId])
+}
+
+// ═══════════════════════════════════════════════
+// PRICING — PRICE BANDS
+// ═══════════════════════════════════════════════
+
+model PriceBand {
+  id             String   @id @default(cuid())
+  communityId    String
+  community      Community @relation(fields: [communityId], references: [id])
+  serviceId      String
+  service        Service  @relation(fields: [serviceId], references: [id])
+  minimum        Float
+  reference      Float
+  maximum        Float
+  status         String   @default("active") // active, under_review, pending_approval
+  version        Int      @default(1)
+  effectiveDate  String
+  approvedBy     String   @default("")
+  reviewedBy     String   @default("")
+  lastReviewDate String   @default("")
+  nextReviewDate String   @default("")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([communityId, serviceId])
+}
+
+// ═══════════════════════════════════════════════
+// PRICING — PROPOSALS
+// ═══════════════════════════════════════════════
+
+model PriceProposal {
+  id               String   @id @default(cuid())
+  communityId      String
+  community        Community @relation(fields: [communityId], references: [id])
+  workerId         String
+  worker           Worker   @relation(fields: [workerId], references: [id])
+  serviceId        String
+  service          Service  @relation(fields: [serviceId], references: [id])
+  proposedPrice    Float
+  currentReference Float    @default(0)
+  reasonId         String
+  explanation      String   @default("")
+  withinRange      String   @default("unknown") // within_range, above_range, below_range
+  status           String   @default("submitted") // submitted, under_review, approved, rejected, implemented
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  exceptions PriceException[]
+
+  @@index([communityId, serviceId])
+  @@index([workerId])
+}
+
+// ═══════════════════════════════════════════════
+// PRICING — EXCEPTIONS (Four-Eyes)
+// ═══════════════════════════════════════════════
+
+model PriceException {
+  id               String   @id @default(cuid())
+  communityId      String?
+  community        Community? @relation(fields: [communityId], references: [id])
+  proposalId       String?
+  proposal         PriceProposal? @relation(fields: [proposalId], references: [id])
+  serviceId        String
+  service          Service  @relation(fields: [serviceId], references: [id])
+  proposedPrice    Float
+  currentRange     String   @default("")
+  difference       Float    @default(0)
+  reason           String
+  evidence         String   @default("")
+  requestedBy      String   // adminId or workerId
+  status           String   @default("pending_review") // pending_review, under_review, approved, rejected, expired
+  reviewedBy       String?
+  reviewNotes      String   @default("")
+  fourEyesApprover String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+// ═══════════════════════════════════════════════
+// PRICING — COMMITTEE
+// ═══════════════════════════════════════════════
+
+model PricingCommittee {
+  id            String   @id @default(cuid())
+  communityId   String
+  community     Community @relation(fields: [communityId], references: [id])
+  maxMembers    Int      @default(3)
+  rotationDays  Int      @default(180)
+  lastRotation  String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  members   PricingCommitteeMember[]
+  decisions PricingCommitteeDecision[]
+}
+
+model PricingCommitteeMember {
+  id          String   @id @default(cuid())
+  committeeId String
+  committee   PricingCommittee @relation(fields: [committeeId], references: [id])
+  workerId    String
+  worker      Worker   @relation(fields: [workerId], references: [id])
+  startDate   String
+  endDate     String?
+  conflict    Boolean  @default(false)
+  status      String   @default("active") // active, rotated, removed
+
+  @@unique([committeeId, workerId])
+}
+
+model PricingCommitteeDecision {
+  id            String   @id @default(cuid())
+  committeeId   String
+  committee     PricingCommittee @relation(fields: [committeeId], references: [id])
+  serviceId     String
+  decision      String
+  justification String   @default("")
+  decidedBy     String
+  members       String   @default("") // JSON array of member IDs at decision time
+  createdAt     DateTime @default(now())
+}
+
+// ═══════════════════════════════════════════════
+// PRICING — CONSUMER FEEDBACK
+// ═══════════════════════════════════════════════
+
+model ConsumerPriceFeedback {
+  id                  String   @id @default(cuid())
+  communityId         String?
+  community           Community? @relation(fields: [communityId], references: [id])
+  userId              String
+  user                User     @relation(fields: [userId], references: [id])
+  serviceId           String
+  service             Service  @relation(fields: [serviceId], references: [id])
+  bookingId           String?
+  satisfaction        Int      @default(3) // 1-5
+  affordability       String   @default("somewhat") // yes, somewhat, no
+  cancelledDueToPrice Boolean  @default(false)
+  complaint           String   @default("")
+  createdAt           DateTime @default(now())
+}
+
+// ═══════════════════════════════════════════════
+// PRICING — ALGORITHM VERSIONING
+// ═══════════════════════════════════════════════
+
+model PricingAlgorithmVersion {
+  id              String   @id @default(cuid())
+  communityId     String
+  community       Community @relation(fields: [communityId], references: [id])
+  version         String
+  effectiveDate   String
+  changeSummary   String   @default("")
+  reason          String   @default("")
+  approver        String   @default("")
+  parameters      String   @default("{}") // JSON: weights, tolerance etc.
+  createdAt       DateTime @default(now())
+}
+
+// ═══════════════════════════════════════════════
+// PRICING — CARTEL ALERTS
+// ═══════════════════════════════════════════════
+
+model CartelAlert {
+  id          String   @id @default(cuid())
+  communityId String?
+  community   Community? @relation(fields: [communityId], references: [id])
+  serviceId   String
+  service     Service  @relation(fields: [serviceId], references: [id])
+  type        String   // identical_proposals, high_frequency, coordinated_spike
+  description String   @default("")
+  severity    String   @default("low") // low, medium, high
+  status      String   @default("flagged") // flagged, investigating, dismissed, confirmed
+  detectedAt  DateTime @default(now())
+  resolvedBy  String?
+  resolvedAt  DateTime?
+}
+
+// ═══════════════════════════════════════════════
+// BOOKING
+// ═══════════════════════════════════════════════
+
+model Booking {
+  id              String   @id
+  communityId     String?
+  community       Community? @relation(fields: [communityId], references: [id])
+  userId          String
+  user            User     @relation(fields: [userId], references: [id])
+  workerId        String?
+  worker          Worker?  @relation("WorkerBookings", fields: [workerId], references: [id])
+  serviceId       String
+  service         Service  @relation(fields: [serviceId], references: [id])
+  subType         String   @default("")
+  description     String   @default("")
+  photo           String?
+  date            String
+  time            String
+  locationType    String   @default("manual") // gps, manual
+  locationDisplay String   @default("")
+  locationHouse   String   @default("")
+  locationStreet  String   @default("")
+  locationCity    String   @default("")
+  locationState   String   @default("")
+  locationPin     String   @default("")
+  locationLat     Float?
+  locationLng     Float?
+  status          String   @default("requested") // Full state machine
+  serviceCharge   Float    @default(0)
+  travelDistance  Float    @default(0)
+  travelCost      Float    @default(0)
+  materialTotal   Float    @default(0)
+  total           Float    @default(0)
+  paymentStatus   String   @default("pending") // pending, processing, paid, failed, refunded
+  paymentMethod   String?
+  rating          Int?
+  review          String?
+  priceLockedAt   DateTime?
+  priceSource     String   @default("SAHKAAR_GOVERNED")
+  priceBandVersion Int?
+  algorithmVersion String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  statusHistory    BookingStatusHistory[]
+  workerResponses  BookingWorkerResponse[]
+  materials        MaterialItem[]
+  travelCalculation TravelCalculation?
+  invoice          Invoice?
+  payments         Payment[]
+}
+
+model BookingStatusHistory {
+  id        String   @id @default(cuid())
+  bookingId String
+  booking   Booking  @relation(fields: [bookingId], references: [id])
+  fromStatus String?
+  toStatus  String
+  changedBy String   @default("")
+  changedByRole String @default("")
+  reason    String   @default("")
+  createdAt DateTime @default(now())
+
+  @@index([bookingId])
+}
+
+model BookingWorkerResponse {
+  id        String   @id @default(cuid())
+  bookingId String
+  booking   Booking  @relation(fields: [bookingId], references: [id])
+  workerId  String
+  worker    Worker   @relation(fields: [workerId], references: [id])
+  response  String   @default("pending") // pending, accepted, declined, timeout
+  distance  Float?
+  respondedAt DateTime?
+  createdAt DateTime @default(now())
+
+  @@unique([bookingId, workerId])
+}
+
+// ═══════════════════════════════════════════════
+// MATERIAL ITEMS
+// ═══════════════════════════════════════════════
+
+model MaterialItem {
+  id        String   @id @default(cuid())
+  bookingId String
+  booking   Booking  @relation(fields: [bookingId], references: [id])
+  name      String
+  quantity  Int      @default(1)
+  unitCost  Float
+  totalCost Float
+  evidence  String?
+  addedBy   String   @default("") // workerId
+  createdAt DateTime @default(now())
+}
+
+// ═══════════════════════════════════════════════
+// TRAVEL CALCULATION
+// ═══════════════════════════════════════════════
+
+model TravelCalculation {
+  id               String  @id @default(cuid())
+  bookingId        String  @unique
+  booking          Booking @relation(fields: [bookingId], references: [id])
+  workerStartLat   Float?
+  workerStartLng   Float?
+  serviceLat       Float?
+  serviceLng       Float?
+  distanceKm       Float   @default(0)
+  calculationMethod String @default("straight_line") // straight_line, road_distance
+  ratePerKm        Float   @default(18)
+  parameterVersion String  @default("1.0")
+  calculatedAmount Float   @default(0)
+  createdAt        DateTime @default(now())
+}
+
+// ═══════════════════════════════════════════════
+// TRAVEL CONFIG (Admin-managed parameters)
+// ═══════════════════════════════════════════════
+
+model TravelConfig {
+  id          String   @id @default(cuid())
+  communityId String
+  community   Community @relation(fields: [communityId], references: [id])
+  ratePerKm   Float    @default(18)
+  version     String   @default("1.0")
+  effectiveDate String
+  approvedBy  String   @default("")
+  createdAt   DateTime @default(now())
+
+  @@index([communityId])
+}
+
+// ═══════════════════════════════════════════════
+// INVOICE
+// ═══════════════════════════════════════════════
+
+model Invoice {
+  id               String   @id @default(cuid())
+  communityId      String?
+  community        Community? @relation(fields: [communityId], references: [id])
+  bookingId        String   @unique
+  booking          Booking  @relation(fields: [bookingId], references: [id])
+  serviceCharge    Float    @default(0)
+  materialTotal    Float    @default(0)
+  travelCost       Float    @default(0)
+  welfareAmount    Float    @default(0)
+  totalAmount      Float    @default(0)
+  priceBandVersion Int?
+  algorithmVersion String?
+  status           String   @default("draft") // draft, issued, paid, cancelled
+  issuedAt         DateTime?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+// ═══════════════════════════════════════════════
+// PAYMENT / TRANSACTION LEDGER
+// ═══════════════════════════════════════════════
+
+model Payment {
+  id                String   @id @default(cuid())
+  communityId       String?
+  community         Community? @relation(fields: [communityId], references: [id])
+  bookingId         String
+  booking           Booking  @relation(fields: [bookingId], references: [id])
+  userId            String
+  workerId          String?
+  amount            Float
+  currency          String   @default("INR")
+  paymentMethod     String   @default("digital") // digital, cash, upi
+  paymentStatus     String   @default("pending") // pending, processing, paid, failed, refunded, cancelled
+  paymentReference  String?  // QR/provider reference
+  transactionId     String?  @unique // idempotency key
+  completedAt       DateTime?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([bookingId])
+}
+
+// ═══════════════════════════════════════════════
+// WELFARE
+// ═══════════════════════════════════════════════
+
+model WelfareRule {
+  id                String   @id @default(cuid())
+  communityId       String
+  community         Community @relation(fields: [communityId], references: [id])
+  version           String   @default("1.0")
+  contributionBasis String   @default("service_charge") // NOT material
+  percentage        Float    @default(2.0) // e.g. 2%
+  effectiveDate     String
+  approvedBy        String   @default("")
+  createdAt         DateTime @default(now())
+}
+
+model WelfareContribution {
+  id            String   @id @default(cuid())
+  communityId   String
+  community     Community @relation(fields: [communityId], references: [id])
+  workerId      String
+  worker        Worker   @relation(fields: [workerId], references: [id])
+  bookingId     String
+  earningBasis  Float    @default(0) // service charge only, NOT materials
+  percentage    Float    @default(0)
+  amount        Float    @default(0)
+  ruleVersion   String   @default("")
+  createdAt     DateTime @default(now())
+
+  @@index([workerId])
+  @@index([bookingId])
+}
+
+// ═══════════════════════════════════════════════
+// INSURANCE
+// ═══════════════════════════════════════════════
+
+model InsurancePlan {
+  id           String   @id @default(cuid())
+  communityId  String
+  community    Community @relation(fields: [communityId], references: [id])
+  name         String
+  coverage     Float
+  monthlyPremium Float
+  terms        String   @default("")
+  status       String   @default("active") // active, discontinued
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  enrollments WorkerInsurance[]
+}
+
+model WorkerInsurance {
+  id            String   @id @default(cuid())
+  workerId      String
+  worker        Worker   @relation(fields: [workerId], references: [id])
+  planId        String
+  plan          InsurancePlan @relation(fields: [planId], references: [id])
+  status        String   @default("active") // active, due, overdue, suspended, cancelled
+  activatedAt   DateTime @default(now())
+  nextDueDate   String?
+  gracePeriodEnd String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  payments InsurancePayment[]
+  claims   InsuranceClaim[]
+}
+
+model InsurancePayment {
+  id              String   @id @default(cuid())
+  workerInsuranceId String
+  workerInsurance WorkerInsurance @relation(fields: [workerInsuranceId], references: [id])
+  amount          Float
+  periodMonth     String   // "2026-09"
+  status          String   @default("pending") // pending, paid, overdue
+  paidAt          DateTime?
+  createdAt       DateTime @default(now())
+
+  @@unique([workerInsuranceId, periodMonth])
+}
+
+model InsuranceClaim {
+  id              String   @id @default(cuid())
+  workerInsuranceId String
+  workerInsurance WorkerInsurance @relation(fields: [workerInsuranceId], references: [id])
+  description     String   @default("")
+  amount          Float    @default(0)
+  status          String   @default("submitted") // submitted, under_review, approved, rejected, paid
+  documents       String   @default("") // JSON array of file paths
+  submittedAt     DateTime @default(now())
+  resolvedAt      DateTime?
+  resolvedBy      String?
+}
+
+// ═══════════════════════════════════════════════
+// GOVERNMENT SCHEMES
+// ═══════════════════════════════════════════════
+
+model GovernmentScheme {
+  id                     String   @id
+  communityId            String
+  community              Community @relation(fields: [communityId], references: [id])
+  schemeName             String
+  shortDescription       String   @default("")
+  fullDescription        String   @default("")
+  department             String   @default("")
+  schemeType             String   @default("")
+  coverImage             String   @default("")
+  officialUrl            String   @default("")
+  startDate              String   @default("")
+  endDate                String   @default("")
+  eligibilityDescription String   @default("")
+  targetCategories       String   @default("[]") // JSON array
+  eligibilityCriteria    String   @default("[]") // JSON array
+  ageMin                 String   @default("")
+  ageMax                 String   @default("")
+  incomeCategory         String   @default("")
+  otherEligibility       String   @default("")
+  benefits               String   @default("[]") // JSON array
+  requiredDocuments      String   @default("[]") // JSON array
+  applicationProcess     String   @default("")
+  applicationInstructions String  @default("")
+  applicationLink        String   @default("")
+  contactInfo            String   @default("")
+  importantNotes         String   @default("")
+  status                 String   @default("draft") // draft, published, unpublished, expired
+  isArchived             Boolean  @default(false)
+  createdByAdminId       String   @default("")
+  updatedByAdminId       String   @default("")
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  applications SchemeApplication[]
+}
+
+model SchemeApplication {
+  id                String   @id
+  schemeId          String
+  scheme            GovernmentScheme @relation(fields: [schemeId], references: [id])
+  workerId          String
+  worker            Worker   @relation(fields: [workerId], references: [id])
+  communityId       String   @default("")
+  applicationStatus String   @default("application_started")
+  adminNotes        String   @default("")
+  submittedAt       DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@unique([schemeId, workerId])
+}
+
+// ═══════════════════════════════════════════════
+// TRAINING
+// ═══════════════════════════════════════════════
+
+model TrainingProgram {
+  id             String   @id @default(cuid())
+  communityId    String
+  community      Community @relation(fields: [communityId], references: [id])
+  name           String
+  organization   String   @default("")
+  skill          String   @default("")
+  eligibility    String   @default("")
+  startDate      String   @default("")
+  endDate        String   @default("")
+  location       String   @default("")
+  capacity       Int      @default(0)
+  requiredDocs   String   @default("[]") // JSON array
+  officialLink   String   @default("")
+  status         String   @default("draft") // draft, published, ongoing, completed, cancelled
+  createdBy      String   @default("")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  enrollments TrainingEnrollment[]
+}
+
+model TrainingEnrollment {
+  id           String   @id @default(cuid())
+  programId    String
+  program      TrainingProgram @relation(fields: [programId], references: [id])
+  workerId     String
+  worker       Worker   @relation(fields: [workerId], references: [id])
+  status       String   @default("enrolled") // enrolled, attending, completed, dropped, certified
+  completedAt  DateTime?
+  certificateId String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([programId, workerId])
+}
+
+// ═══════════════════════════════════════════════
+// GOVERNMENT REQUIREMENTS (future-ready)
+// ═══════════════════════════════════════════════
+
+model GovernmentRequirement {
+  id             String   @id @default(cuid())
+  communityId    String
+  community      Community @relation(fields: [communityId], references: [id])
+  skill          String   @default("")
+  quantity       Int      @default(0)
+  location       String   @default("")
+  requiredDate   String   @default("")
+  qualification  String   @default("")
+  status         String   @default("open") // open, in_progress, fulfilled, closed
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+// ═══════════════════════════════════════════════
+// SUPPORT TICKETS
+// ═══════════════════════════════════════════════
+
+model SupportTicket {
+  id           String   @id @default(cuid())
+  communityId  String?
+  community    Community? @relation(fields: [communityId], references: [id])
+  userId       String?
+  user         User?    @relation(fields: [userId], references: [id])
+  workerId     String?
+  worker       Worker?  @relation("WorkerTickets", fields: [workerId], references: [id])
+  bookingId    String?
+  category     String   @default("general") // general, booking, payment, pricing, worker, service
+  description  String   @default("")
+  attachments  String   @default("[]") // JSON array
+  priority     String   @default("medium") // low, medium, high, urgent
+  assignedTo   String?
+  status       String   @default("open") // open, in_review, waiting_for_information, resolved, closed
+  resolution   String   @default("")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+// ═══════════════════════════════════════════════
+// AUDIT LOG (immutable)
+// ═══════════════════════════════════════════════
+
+model AuditLog {
+  id            String   @id @default(cuid())
+  communityId   String?
+  community     Community? @relation(fields: [communityId], references: [id])
+  actorId       String
+  actor         Admin?   @relation(fields: [actorId], references: [id])
+  actorRole     String   @default("")
+  action        String
+  entityType    String   @default("")
+  entityId      String   @default("")
+  previousValue String   @default("")
+  newValue      String   @default("")
+  reason        String   @default("")
+  ipAddress     String   @default("")
+  createdAt     DateTime @default(now())
+
+  @@index([communityId])
+  @@index([actorId])
+  @@index([entityType, entityId])
+}
+
+model AdminActionLog {
+  id            String   @id @default(cuid())
+  communityId   String?
+  community     Community? @relation(fields: [communityId], references: [id])
+  adminId       String
+  admin         Admin    @relation(fields: [adminId], references: [id])
+  action        String
+  category      String   @default("")
+  previousValue String   @default("")
+  newValue      String   @default("")
+  reason        String   @default("")
+  createdAt     DateTime @default(now())
+
+  @@index([adminId])
+}
+
+// ═══════════════════════════════════════════════
+// NOTIFICATIONS
+// ═══════════════════════════════════════════════
+
+model Notification {
+  id          String   @id @default(cuid())
+  communityId String?
+  community   Community? @relation(fields: [communityId], references: [id])
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id])
+  workerId    String?
+  worker      Worker?  @relation("WorkerNotifications", fields: [workerId], references: [id])
+  adminId     String?
+  type        String   @default("info") // info, booking, payment, pricing, certification, scheme, training, welfare, insurance, alert
+  title       String   @default("")
+  body        String   @default("")
+  read        Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+  @@index([workerId])
+}

@@ -1,0 +1,431 @@
+/* ═══════════════════════════════════════════
+   ADMIN PRICING GOVERNANCE — STYLES
+   ═══════════════════════════════════════════ */
+
+/* ─── Dashboard Stats ─── */
+.pricing-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+.pricing-stat {
+  text-align: center;
+  padding: var(--space-4) var(--space-2);
+}
+
+.pricing-stat__value {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.pricing-stat__label {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  margin-top: var(--space-1);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ─── Tabs ─── */
+.pricing-tabs {
+  display: flex;
+  gap: var(--space-1);
+  overflow-x: auto;
+  padding-bottom: var(--space-3);
+  margin-bottom: var(--space-4);
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.pricing-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.pricing-tab {
+  flex-shrink: 0;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.pricing-tab--active {
+  background: var(--color-primary);
+  color: var(--color-on-primary, #fff);
+  border-color: var(--color-primary);
+}
+
+.pricing-tab__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  background: var(--color-error);
+  color: #fff;
+  border-radius: var(--radius-pill);
+  font-size: 0.65rem;
+  font-weight: 700;
+  margin-left: var(--space-1);
+  padding: 0 4px;
+}
+
+/* ─── Price Band Table ─── */
+.price-band-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.price-band-table th,
+.price-band-table td {
+  padding: var(--space-2) var(--space-2);
+  text-align: left;
+  font-size: 0.8rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.price-band-table th {
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+}
+
+.price-band-table td.currency {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+}
+
+.price-band-row--highlight {
+  background: var(--color-primary-alpha, rgba(99, 102, 241, 0.06));
+}
+
+/* ─── Proposal Card ─── */
+.proposal-card {
+  padding: var(--space-4);
+  margin-bottom: var(--space-3);
+  border-left: 3px solid var(--border);
+  transition: border-color 0.2s ease;
+}
+
+.proposal-card--within {
+  border-left-color: var(--color-success);
+}
+
+.proposal-card--above {
+  border-left-color: var(--color-error);
+}
+
+.proposal-card--below {
+  border-left-color: var(--color-warning);
+}
+
+.proposal-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-2);
+}
+
+.proposal-card__service {
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: capitalize;
+}
+
+.proposal-card__price {
+  font-weight: 700;
+  font-size: 1rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.proposal-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-top: var(--space-2);
+}
+
+.proposal-card__actions {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+/* ─── Audit Row ─── */
+.audit-row {
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.8rem;
+}
+
+.audit-row:last-child {
+  border-bottom: none;
+}
+
+.audit-row__action {
+  font-weight: 600;
+  margin-bottom: var(--space-1);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.audit-row__detail {
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+}
+
+.audit-row__values {
+  display: flex;
+  gap: var(--space-3);
+  margin-top: var(--space-1);
+  font-size: 0.78rem;
+}
+
+.audit-row__old {
+  text-decoration: line-through;
+  color: var(--text-tertiary);
+}
+
+.audit-row__new {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+/* ─── Committee Section ─── */
+.committee-members {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-4);
+}
+
+.committee-member {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--bg-secondary);
+  font-size: 0.82rem;
+}
+
+.committee-member__remove {
+  background: none;
+  border: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  padding: 2px;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.committee-member__remove:hover {
+  color: var(--color-error);
+}
+
+/* ─── Range Indicator ─── */
+.range-indicator {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+
+.range-indicator--within {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--color-success);
+}
+
+.range-indicator--above {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--color-error);
+}
+
+.range-indicator--below {
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--color-warning);
+}
+
+/* ─── Algorithm Version ─── */
+.algo-version {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--bg-secondary);
+  font-size: 0.82rem;
+  margin-bottom: var(--space-3);
+}
+
+.algo-version__tag {
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+/* ─── Cartel Alert ─── */
+.cartel-alert {
+  padding: var(--space-3) var(--space-4);
+  margin-bottom: var(--space-3);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+}
+
+.cartel-alert--high {
+  border-color: var(--color-error);
+  background: rgba(239, 68, 68, 0.04);
+}
+
+.cartel-alert--medium {
+  border-color: var(--color-warning);
+  background: rgba(245, 158, 11, 0.04);
+}
+
+.cartel-alert--low {
+  border-color: var(--border);
+}
+
+.cartel-alert__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-2);
+}
+
+.cartel-alert__type {
+  font-weight: 600;
+  font-size: 0.82rem;
+  text-transform: capitalize;
+}
+
+/* ─── Feedback Stats ─── */
+.feedback-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.feedback-stat {
+  text-align: center;
+  padding: var(--space-3);
+}
+
+.feedback-stat__value {
+  display: block;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.feedback-stat__label {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  margin-top: var(--space-1);
+}
+
+/* ─── Emergency Banner ─── */
+.emergency-banner {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid var(--color-error);
+  margin-bottom: var(--space-4);
+  font-size: 0.82rem;
+}
+
+.emergency-banner__title {
+  font-weight: 700;
+  color: var(--color-error);
+  margin-bottom: var(--space-1);
+}
+
+/* ─── Worker Pricing ─── */
+.price-proposal-current {
+  text-align: center;
+  padding: var(--space-6) var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.price-proposal-current__label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-2);
+}
+
+.price-proposal-current__value {
+  font-size: 2rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.price-proposal-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.reason-select {
+  width: 100%;
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  font-family: inherit;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+}
+
+.proposal-history {
+  margin-top: var(--space-6);
+}
+
+.proposal-history__item {
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.82rem;
+}
+
+.proposal-history__item:last-child {
+  border-bottom: none;
+}
+
+.governance-disclaimer {
+  text-align: center;
+  padding: var(--space-3);
+  font-size: 0.7rem;
+  color: var(--text-tertiary);
+  border-top: 1px solid var(--border);
+  margin-top: var(--space-4);
+}
